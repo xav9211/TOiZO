@@ -208,6 +208,7 @@ void chooseRobots(std::vector<std::vector<int>> &warehouse, std::vector<robot> r
 			iter_w = robots[iter].startCoordinates.x + 1;
 			iter_h = robots[iter].startCoordinates.y;
 		}
+		chooseRobots(warehouse, robots, w, h, iter, iter_h, iter_w, coverage);
 	}
 }
 
