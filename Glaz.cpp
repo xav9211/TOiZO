@@ -22,7 +22,7 @@ struct robot{
 
 void readFromInput(int &w, int &h, int &coverage, int &numberOfRobots, std::vector<robot> &robots);
 void showWarehouse(std::vector<std::vector<int>> warehouse, int w, int h);
-coordinates drawRobotPath(std::vector<std::vector<int>> &warehouse, robot drawingRobot, int w, int h, int x, int y);
+coordinates drawRobotPath(std::vector<std::vector<int>> &warehouse, robot drawingRobot, int w, int h, int x, int y, int fill);
 bool checkRobotsPath(std::vector<std::vector<int>> warehouse, robot drawingRobot, int w, int h, int x, int y);
 void chooseRobots(std::vector<std::vector<int>> &warehouse, std::vector<robot> robots, int w, int h, int iter_robots, int iter_h, int iter_w, int coverage);
 bool isCoverage(std::vector<std::vector<int>> &warehouse, int coverage, int w, int h);
@@ -85,34 +85,34 @@ void showWarehouse(std::vector<std::vector<int>> warehouse, int w, int h){
 	}
 }
 
-coordinates drawRobotPath(std::vector<std::vector<int>> &warehouse, robot drawingRobot, int w, int h, int x, int y){
+coordinates drawRobotPath(std::vector<std::vector<int>> &warehouse, robot drawingRobot, int w, int h, int x, int y, int fill){
 	int dx = x;
 	int dy = y;
 	coordinates retCoordinates;
 	retCoordinates.x = x;
 	retCoordinates.y = y;
 
-	warehouse[dy][dx] = drawingRobot.id;
+	warehouse[dy][dx] = fill;
 	for(int i = 0; i < drawingRobot.numberOfMoves; i++){
 		switch(drawingRobot.moves[i].direct){
 			case 'W':
 				for(int j = 0; j < drawingRobot.moves[i].length; j++){
 					dx--;
-					warehouse[dy][dx] = drawingRobot.id;
+					warehouse[dy][dx] = fill;
 				}
 			break;
 
 			case 'E':
 				for(int j = 0; j < drawingRobot.moves[i].length; j++){
 					dx++;
-					warehouse[dy][dx] = drawingRobot.id;
+					warehouse[dy][dx] = fill;
 				}
 			break;
 
 			case 'N':
 				for(int j = 0; j < drawingRobot.moves[i].length; j++){
 					dy--;
-					warehouse[dy][dx] = drawingRobot.id;
+					warehouse[dy][dx] = fill;
 
 				}
 			break;
@@ -120,7 +120,7 @@ coordinates drawRobotPath(std::vector<std::vector<int>> &warehouse, robot drawin
 			case 'S':
 				for(int j = 0; j < drawingRobot.moves[i].length; j++){
 					dy++;
-					warehouse[dy][dx] = drawingRobot.id;
+					warehouse[dy][dx] = fill;
 				}
 			break;
 
@@ -182,7 +182,7 @@ void chooseRobots(std::vector<std::vector<int>> &warehouse, std::vector<robot> r
 			for(int i = iter_h; i < h; i++){
 				for(int j = iter_w; j < w; j++){
 					if(checkRobotsPath(warehouse, robots[k], w, h, j, i)){
-						drawRobotPath(warehouse, robots[k], w, h, j, i);
+						drawRobotPath(warehouse, robots[k], w, h, j, i, robots[k].id);
 						robots[k].isUsed = true;
 						break;
 					}
@@ -192,8 +192,22 @@ void chooseRobots(std::vector<std::vector<int>> &warehouse, std::vector<robot> r
 			}
 	}
 
-	if(1){
+	if(!isCoverage(warehouse, coverage, w, h)){
+		int iter = robots.size();
+		do{
+			while(iter >= 0 && !robots[iter].isUsed)
+				iter--;
+			drawRobotPath(warehouse, robots[iter], w, h, robots[iter].startCoordinates.x, robots[iter].startCoordinates.y, 0);
+			robots[iter].isUsed = false;
+		}while(robots[iter].startCoordinates.x == w - 1 && robots[iter].startCoordinates.y == h - 1);
 
+		if(robots[iter].startCoordinates.x == w - 1){
+			iter_w = 0;
+			iter_h = robots[iter].startCoordinates.y + 1;
+		}else{
+			iter_w = robots[iter].startCoordinates.x + 1;
+			iter_h = robots[iter].startCoordinates.y;
+		}
 	}
 }
 
