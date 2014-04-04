@@ -57,21 +57,16 @@ int main(int argc, char** argv){
 void readFromInput(int &w, int &h, int &coverage, int &numberOfRobots, std::vector<robot> &robots){
 	std::cin >> w >> h;
 	std::cin >> coverage >> numberOfRobots;
-
-	// std::cout << w << " " << h << "\n";
-	// std::cout << coverage << "\n" << numberOfRobots << "\n";
 	
 	robots = std::vector<robot>(numberOfRobots);
 	for(int i = 0; i < numberOfRobots; i++){
 		std::cin >> robots[i].id >> robots[i].numberOfMoves;
-		// std::cout << robots[i].id << "\n" << robots[i].numberOfMoves << "\n";
 
 		if(robots[i].numberOfMoves != 0){
 			robots[i].moves = std::vector<move>(robots[i].numberOfMoves);
 
 			for(int j = 0; j < robots[i].numberOfMoves; j++){
 				std::cin >> robots[i].moves[j].direct >> robots[i].moves[j].length;
-				// std::cout << robots[i].moves[j].direct << " " << robots[i].moves[j].length << "\n";
 			}
 		}
 
@@ -182,8 +177,6 @@ bool checkRobotsPath(std::vector<std::vector<int>> warehouse, robot drawingRobot
 }
 
 void chooseRobots(std::vector<std::vector<int>> &warehouse, std::vector<robot> &robots, int w, int h, int iter_robots, int iter_h, int iter_w, int coverage){
-	//showWarehouse(warehouse, w, h);
-	//std::cout<<"\n";
 
 	for(int k = iter_robots; k < robots.size(); k++){
 		if(!robots[k].isUsed)
@@ -202,7 +195,6 @@ void chooseRobots(std::vector<std::vector<int>> &warehouse, std::vector<robot> &
 		iter_h = 0;
 		iter_w = 0;
 	}
-	//std::cout << isCoverage(warehouse, coverage, w, h) << "\n";
 
 	if(!isCoverage(warehouse, coverage, w, h)){
 		int iter = robots.size() - 1;
@@ -223,7 +215,7 @@ void chooseRobots(std::vector<std::vector<int>> &warehouse, std::vector<robot> &
 			iter_w = robots[iter].startCoordinates.x + 1;
 			iter_h = robots[iter].startCoordinates.y;
 		}
-		//std::cout << iter << " w: " << iter_w << " h: " << iter_h << "\n";
+
 		chooseRobots(warehouse, robots, w, h, iter, iter_h, iter_w, coverage);
 	}
 }
